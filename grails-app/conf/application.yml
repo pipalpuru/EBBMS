@@ -97,7 +97,7 @@ dataSource:
     #    dialect: net.kaleidos.hibernate.PostgresqlExtensionsDialect
     dbCreate: 'update'
     username: 'postgres'
-    password: 'root'
+    password: 'toor$2576'
 
 environments:
     development:
