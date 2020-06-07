@@ -5,9 +5,10 @@
     <meta name="layout" content="wecare/headerfooter"/>
 </head>
 <body>
-<div class="container bgimage">
+<div class="container">
     <div class="container">
         <g:uploadForm controller="beDoner" action="data" method="post" >
+            <br/><br/>
             <div class="row" align="center">
                 <div class="col-md-1">
                 </div>
@@ -34,8 +35,6 @@
                     <input type="text" name="name" value="" required> <br/> <br/>
                     <label> Email:</label> <br/>
                     <input type="email" name="email" value="" required> <br/> <br/>
-                    <label> Address:</label> <br/>
-                    <input type="text" name="address" value="" required> <br/> <br/>
                     <label> Phone:</label> <br/>
                     <input type="text" name="phone" value="" required> <br/> <br/>
                     <label> Username:</label> <br/>
@@ -60,10 +59,8 @@
                     <input type="text" name="gender" value="" required> <br/> <br/>
                     <label> Age:</label> <br/>
                     <input type="text" name="age" value="" required> <br/> <br/>
-                    <label> Last Donated Date:</label> <br/>
-                    <input type="date" name="lastdonateddate" value="" required> <br/> <br/>
-                    <label> Next Donation Day:</label> <br/>
-                    <input type="date" name="nextdonationdate" value="" required> <br/> <br/>
+                    <label> Address:</label> <br/>
+                    <input type="text" name="address" value="" required> <br/> <br/>
                 </div>
             </div>
 

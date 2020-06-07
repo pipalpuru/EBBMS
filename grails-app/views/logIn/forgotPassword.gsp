@@ -24,29 +24,31 @@
                                 <p>You can reset your password here.</p>
 
                                 <div class="panel-body">
-
-                                    <g:uploadForm controller="beDoner" action="forgotPassword" method="POST">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i
-                                                        class="glyphicon glyphicon-envelope color-blue"></i>
-                                                </span>
-                                                <input name="email" class="form-control"
-                                                       placeholder=" enter your email address" type="email"
-                                                       oninvalid="setCustomValidity('Please enter a valid email address!')"
-                                                       onchange="try {
-                                                           setCustomValidity('')
-                                                       } catch (e) {
-                                                       }" required=""/>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i
+                                                    class="glyphicon glyphicon-envelope color-blue"></i>
+                                            </span>
+                                            <input id="number" class="form-control"
+                                                   placeholder=" enter your mobile number" type="text" autocomplete="off" required=""/>
+                                            <br/><br/>
                                             <button class="btn btn-lg btn-primary btn-block"
-                                                    type="submit"> Find Your Email </button>
-                                        </div> <br/>
+                                                    type="button" id="findEmail" onclick="findEmail()">Find Your Number</button>
+                                        </div>
+                                    </div>
+                                    <br/>
 
-                                    </g:uploadForm>
+                                    <div class="form-group" id="passwordDiv" hidden>
+                                        <div class="input-group">
+                                            <input id="password" class="form-control"  type="password" autocomplete="off" required/>
+                                        </div>
+                                        <br/>
+                                        <input id="password2" class="form-control" type="password" autocomplete="off"  required/>
+                                        <input id="id"  type="text" hidden/>
+                                        <br/>  <br/>
+                                        <button class="btn btn-lg btn-primary btn-block"
+                                                type="submit" id="changePassword"  onclick="changePassword()">Change Password</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -56,3 +58,62 @@
         </div>
     </div>
 </div>
+<script>
+    function findEmail() {
+        var number = $("#number").val();
+        var formData = new FormData();
+        formData.append("number", number);
+        $.ajax(
+            {
+                type: 'POST',
+                url: '${createLink(controller: "beDoner", action: "emailVerify")}',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log(data);
+                    if(data.message == "user found"){
+                        $("#passwordDiv").removeAttr("hidden");
+                        $("#id").val(data.user);
+                    }else{
+                        alert("User Not Found !!!");
+                    }
+                }
+            }
+        );
+    }
+
+    function changePassword() {
+        var password1 = $("#password").val();
+        var password2 = $("#password2").val();
+        var id = $("#id").val();
+        if(password1 === password2){
+            var formData = new FormData();
+            formData.append("newPassword", password1);
+            formData.append("id", id);
+            $.ajax(
+                {
+                    type: 'POST',
+                    url: '${createLink(controller: "beDoner", action: "forgotPassword")}',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        if(data.message == "password changed"){
+                           alert("Password Changed Successfully !!!");
+                           window.location.reload();
+                        }else{
+                            alert("User Not Found !!!");
+                        }
+                    }
+                }
+            );
+        }else{
+            alert("Password Don't Match !!!");
+        }
+
+    }
+</script>

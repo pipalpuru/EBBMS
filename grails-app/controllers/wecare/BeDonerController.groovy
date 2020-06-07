@@ -1,5 +1,6 @@
 package wecare
 
+import org.grails.web.json.JSONObject
 import org.springframework.security.access.annotation.Secured
 
 import javax.imageio.ImageIO
@@ -40,22 +41,22 @@ class BeDonerController {
         data.gender = params.gender
         data.age = params.age
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd")
-        String dateString = params.lastdonateddate
-        println dateString
-        Date date1 = format.parse(dateString)
-        data.lastdonateddate = date1
-
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd")
-        String dateString2 = params.nextdonationdate
-        println dateString2
-        Date date2 = format2.parse(dateString2)
-        data.nextdnationdate = date2
-
-        Date cdate = new Date()
-        SimpleDateFormat format3 = new SimpleDateFormat("yyyy-MM-dd")
-        String dateString3 = cdate
-        data.expDate = date1-cdate
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd")
+//        String dateString = params.lastdonateddate
+//        println dateString
+//        Date date1 = format.parse(dateString)
+//        data.lastdonateddate = date1
+//
+//        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd")
+//        String dateString2 = params.nextdonationdate
+//        println dateString2
+//        Date date2 = format2.parse(dateString2)
+//        data.nextdnationdate = date2
+//
+//        Date cdate = new Date()
+//        SimpleDateFormat format3 = new SimpleDateFormat("yyyy-MM-dd")
+//        String dateString3 = cdate
+//        data.expDate = date1-cdate
         data.save(flush: true)
 
         if (!data.validate()) {
@@ -66,7 +67,11 @@ class BeDonerController {
 
         if (data.save(flush: true)) {
             flag = true
-            UserInfoRoleInfo.create(data, RoleInfo.findById(1))
+            def userRole = new UserInfoRoleInfo()
+            userRole.userInfo = data
+            userRole.roleInfo = RoleInfo.findById(2)
+            userRole.save(flush: true)
+
         } else {
             flag = false
         }
@@ -84,15 +89,16 @@ class BeDonerController {
     }
 
     def forgotPassword() {
-        def data = UserInfo.findByEmail(params.email)
-       if (data){
-            render(view: '/logIn/changePassword', model: [data: data, params: params])
+        JSONObject object = new JSONObject()
+        def data = UserInfo.findById(params.id)
+        data.password = params.newPassword
+        if(data.save(fulsh: true, failOnError: true)){
+            object.put("message", "password changed")
+        }else{
+            object.put("message", "password not changed")
+        }
+        render object
 
-        }
-        else{
-            println "  USERNAME NOT FOUND"
-            redirect(action: 'index2')
-        }
     }
 
     def changePassword(){
@@ -110,6 +116,21 @@ class BeDonerController {
             println " can not perform task"
         }
 
+    }
+
+    def emailVerify(){
+        println "params = $params"
+        JSONObject object = new JSONObject()
+        def phone = params.number
+        def data = UserInfo.findByPhone(phone)
+        println "data = $data"
+        if(data){
+            object.put("message", "user found")
+            object.put("user", data.id)
+        }else{
+            object.put("message", "user not found")
+        }
+        render object
     }
 
 
